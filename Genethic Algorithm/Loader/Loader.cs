@@ -12,11 +12,14 @@ namespace Genethic_Algorithm
         int capacity;
         int dimensions;
         double minspeed;
-        double maxspeed;
+        double maxspeed; 
+
         //City[] cities;
         //Item[] items;
 
         public Loader(string filepath) { this.filepath = filepath; }
+
+        public int Dimensions { get => dimensions; set => dimensions = value; }
 
         void readFile()
         {
@@ -32,7 +35,7 @@ namespace Genethic_Algorithm
             sr.ReadLine(); //weight type
             sr.ReadLine(); //city table pattern
             //cities = new City[dimensions];
-            for(int i = 0; i < dimensions; i++)
+            for (int i = 0; i < dimensions; i++)
             {
 
             }

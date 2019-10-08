@@ -28,6 +28,8 @@ namespace Genethic_Algorithm
 
         //CONSTANTS
         const bool SHUFFLE = true;
+        const int POPULATIONS_PRINTER_INTERVAL = 100;
+        const int ALGORITHM_STOP_MARKER = 5000;
 
         public GenethicAlgorithm(int populationSize, double probM, double probX, int tournamentSize, Loader testData, string outputDataFile)
         {
@@ -52,8 +54,8 @@ namespace Genethic_Algorithm
 
         public Specimen[] Initialize()
         {
-            int[] initialGenotype = new int[testData.dimensions];
-            for (int i = 0; i < testData.dimensions; i++)
+            int[] initialGenotype = new int[testData.Dimensions];
+            for (int i = 0; i < testData.Dimensions; i++)
             {
                 initialGenotype[i] = testData.genes[i];
             }
@@ -86,25 +88,79 @@ namespace Genethic_Algorithm
                     populationBestScore = score;
                     bestSpecimenIndex = i;
                 }
-                if()
+                if(populationWorstScore > score)
+                {
+                    populationWorstScore = score;
+                }
+                populationAvarageScore += score;
             }
-            
-            throw new NotImplementedException();
+            if (populationBestScore > bestScore)
+            {
+                bestScore = populationBestScore;
+                indexOfBestPopulation = indexOfCurrentPopulation;
+                bestGenotype = new int[testData.Dimensions];
+                for (int d = 0; d < testData.Dimensions; d++)
+                {
+                    bestGenotype[d] = population[bestSpecimenIndex].Genotype[d];
+                }
+            }
+            try
+            {
+                //write to CSV
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+            if(indexOfBestPopulation%POPULATIONS_PRINTER_INTERVAL == 0)
+            {
+                PrintScore();
+            }
         }
 
         public void run()
         {
-            throw new NotImplementedException();
+            while (true)
+            {
+                Evaluate();
+                if(indexOfCurrentPopulation - indexOfBestPopulation >= ALGORITHM_STOP_MARKER)
+                {
+                    break;
+                }
+
+                population = Selection();
+                Crossover();
+                Mutation();
+                indexOfCurrentPopulation++;
+            }
+            Evaluate();
+            Console.WriteLine("Algorithm has finished.");
         }
 
         public void Crossover()
         {
-            throw new NotImplementedException();
+            Random random = new Random();
+            for(int i = 0; i < populationSize; i += 2)
+            {
+                if(random.NextDouble() <= probX)
+                {
+                    Specimen[] children = Specimen.Crossover(population[i], population[i + 1]);
+                    population[i] = children[0];
+                    population[i + 1] = children[1];
+                }
+            }
         }
 
         public void Mutation()
         {
-            throw new NotImplementedException();
+            Random random = new Random();
+            for (int i = 0; i < populationSize; i ++)
+            {
+                if (random.NextDouble() <= probX)
+                {
+                    population[i] = population[i].Mutate();
+                }
+            }
         }
 
         public void PrintScore()
