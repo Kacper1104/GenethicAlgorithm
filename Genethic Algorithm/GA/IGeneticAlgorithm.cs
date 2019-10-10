@@ -10,7 +10,7 @@ namespace Genethic_Algorithm
         void Evaluate();
         void run();
         Specimen[] Selection();
-        Specimen Trournament();
+        Specimen Tournament();
         void Crossover();
         void Mutation();
         void PrintScore();

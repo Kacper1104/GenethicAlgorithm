@@ -170,12 +170,42 @@ namespace Genethic_Algorithm
 
         public Specimen[] Selection()
         {
-            throw new NotImplementedException();
+            Specimen[] newPopulation = new Specimen[populationSize];
+            for(int i = 0; i < populationSize; i++)
+            {
+                newPopulation[i] = Tournament(population, tournamentSize); //tournament selection method
+                //newPopulation[i] = Roulette(population); //Roulette selection method
+                //newPopulation[i] = RandomSpecimen(population); //'Random' selection method
+            }
+            return newPopulation;
         }
 
-        public Specimen Trournament()
+        public Specimen Tournament(Specimen[] population, int tournamentSize)
         {
-            throw new NotImplementedException();
+            Random random = new Random();
+            Specimen fittest = new Specimen();
+            double fittestScore = Double.MinValue;
+            Specimen[] contestants = new Specimen[tournamentSize];
+            int randomContestant = random.Next(populationSize);
+            for(int i = 0; i < tournamentSize; i++)
+            {
+                while(Array.Find(contestants, c => object.ReferenceEquals(c, population[randomContestant])) != null)
+                {
+                    randomContestant = random.Next(populationSize);
+                }
+                contestants[i] = population[randomContestant];
+            }
+            double contestantScore;
+            foreach(Specimen contestant in contestants)
+            {
+                contestantScore = contestant.Evaluate();
+                if(contestantScore > fittestScore)
+                {
+                    fittestScore = contestantScore;
+                    fittest = new Specimen(contestant.Genotype, noschuffle);
+                }
+            }
+            return fittest;
         }
     }
 }

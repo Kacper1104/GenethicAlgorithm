@@ -19,5 +19,10 @@ namespace Genethic_Algorithm
         {
             throw new NotImplementedException();
         }
+
+        internal double Evaluate()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
