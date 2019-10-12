@@ -14,7 +14,7 @@ namespace Genethic_Algorithm
         int tournamentSize;
         Loader testData;
         StreamWriter fileWriter;
-        Object problem;
+        IProblem problem;
 
         //VARIABLES
         Specimen[] population;
@@ -38,7 +38,7 @@ namespace Genethic_Algorithm
             this.probX = probX;
             this.tournamentSize = tournamentSize;
             this.testData = testData;
-            this.problem = new Problem(testData);
+            this.problem = new KnapsackProblem(testData);
 
             try
             {
@@ -100,7 +100,7 @@ namespace Genethic_Algorithm
             int bestSpecimenIndex = 0;
             for(int i = 0; i < population.Length; i++)
             {
-                double score = population[i].Evaluate();
+                double score = population[i].Evaluate(problem);
 
                 if (populationBestScore < score)
                 {
@@ -143,7 +143,7 @@ namespace Genethic_Algorithm
             {
                 if(random.NextDouble() <= probX)
                 {
-                    Specimen[] children = Specimen.Crossover(population[i], population[i + 1]);
+                    Specimen[] children = population[i].Crossover(population[i + 1]);
                     population[i] = children[0];
                     population[i + 1] = children[1];
                 }
@@ -204,7 +204,7 @@ namespace Genethic_Algorithm
             double contestantScore;
             foreach(Specimen contestant in contestants)
             {
-                contestantScore = contestant.Evaluate();
+                contestantScore = contestant.Evaluate(problem);
                 if(contestantScore > fittestScore)
                 {
                     fittestScore = contestantScore;

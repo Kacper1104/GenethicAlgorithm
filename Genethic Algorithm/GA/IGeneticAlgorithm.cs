@@ -10,7 +10,7 @@ namespace Genethic_Algorithm
         void Evaluate();
         void Run();
         Specimen[] Selection();
-        Specimen Tournament();
+        Specimen Tournament(Specimen[] population, int tournamentSize);
         void Crossover();
         void Mutation();
         void PrintScore();

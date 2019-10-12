@@ -8,21 +8,22 @@ namespace Genethic_Algorithm
     {
         int[] genotype;
 
+        public Specimen()
+        {
+        }
+
         public int[] Genotype { get => genotype; set => genotype = value; }
 
-        internal static Specimen[] Crossover(Specimen specimen1, Specimen specimen2)
+        public Specimen[] Crossover(Specimen partner)
         {
             throw new NotImplementedException();
         }
 
-        internal Specimen Mutate()
+        public Specimen Mutate()
         {
             throw new NotImplementedException();
         }
 
-        internal double Evaluate()
-        {
-            throw new NotImplementedException();
-        }
+        public double Evaluate(IProblem problem) => problem.Evaluate(genotype);
     }
 }

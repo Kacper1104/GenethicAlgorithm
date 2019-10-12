@@ -2,10 +2,10 @@
 {
     internal interface ISpecimen
     {
-        Specimen[] Crossover(Specimen specimen1, Specimen specimen2);
+        Specimen[] Crossover(Specimen partner);
 
         Specimen Mutate();
 
-        double Evaluate();
+        double Evaluate(IProblem problem);
     }
 }

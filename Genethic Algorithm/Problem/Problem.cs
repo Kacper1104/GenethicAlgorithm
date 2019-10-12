@@ -4,13 +4,17 @@ using System.Text;
 
 namespace Genethic_Algorithm
 {
-    class KnapsackProblem : Evaluate
+    internal class KnapsackProblem : IProblem
     {
         Loader testData;
         double[] values;
         double[] weights;
         int itemsNumber;
         double knapsackCapacity;
+
+        public KnapsackProblem()
+        {
+        }
 
         public KnapsackProblem(Loader testData)
         {

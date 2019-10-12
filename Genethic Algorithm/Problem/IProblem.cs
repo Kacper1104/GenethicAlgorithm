@@ -1,6 +1,6 @@
 ﻿namespace Genethic_Algorithm
 {
-    internal interface Evaluate
+    internal interface IProblem
     {
         double Evaluate(int[] itemsTaken);
     }
