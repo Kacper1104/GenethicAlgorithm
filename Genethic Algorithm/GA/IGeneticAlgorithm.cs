@@ -8,7 +8,7 @@ namespace Genethic_Algorithm
     {
         Specimen[] Initialize();
         void Evaluate();
-        void run();
+        void Run();
         Specimen[] Selection();
         Specimen Tournament();
         void Crossover();

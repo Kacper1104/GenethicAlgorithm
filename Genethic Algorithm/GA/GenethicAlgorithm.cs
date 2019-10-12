@@ -52,6 +52,25 @@ namespace Genethic_Algorithm
             //Add CSV printer
         }
 
+        public void Run()
+        {
+            while (true)
+            {
+                Evaluate();
+                if (indexOfCurrentPopulation - indexOfBestPopulation >= ALGORITHM_STOP_MARKER)
+                {
+                    break;
+                }
+
+                population = Selection();
+                Crossover();
+                Mutation();
+                indexOfCurrentPopulation++;
+            }
+            Evaluate();
+            Console.WriteLine("Algorithm has finished.");
+        }
+
         public Specimen[] Initialize()
         {
             int[] initialGenotype = new int[testData.Dimensions];
@@ -117,26 +136,6 @@ namespace Genethic_Algorithm
                 PrintScore();
             }
         }
-
-        public void run()
-        {
-            while (true)
-            {
-                Evaluate();
-                if(indexOfCurrentPopulation - indexOfBestPopulation >= ALGORITHM_STOP_MARKER)
-                {
-                    break;
-                }
-
-                population = Selection();
-                Crossover();
-                Mutation();
-                indexOfCurrentPopulation++;
-            }
-            Evaluate();
-            Console.WriteLine("Algorithm has finished.");
-        }
-
         public void Crossover()
         {
             Random random = new Random();
@@ -165,7 +164,14 @@ namespace Genethic_Algorithm
 
         public void PrintScore()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Population index: "+indexOfCurrentPopulation);
+            Console.WriteLine("Population best score: "+populationBestScore);
+            Console.WriteLine("Population worst score: "+populationWorstScore);
+            Console.WriteLine("Population avarage score: "+populationAvarageScore);
+            Console.WriteLine("-------------------------------------");
+            Console.WriteLine("Best score ever: "+bestScore);
+            Console.WriteLine("Best population index: "+indexOfBestPopulation);
+            Console.WriteLine();
         }
 
         public Specimen[] Selection()

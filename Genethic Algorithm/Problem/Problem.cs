@@ -4,10 +4,26 @@ using System.Text;
 
 namespace Genethic_Algorithm
 {
-    class Problem
+    class KnapsackProblem : Evaluate
     {
-        public Problem(Loader testData)
+        Loader testData;
+        double[] values;
+        double[] weights;
+        int itemsNumber;
+        double knapsackCapacity;
+
+        public KnapsackProblem(Loader testData)
         {
+            this.testData = testData;
+            values = testData.values;
+            weights = testData.weights;
+            itemsNumber = testData.itemsNumber;
+            knapsackCapacity = testData.kapsackCapacity;
+        }
+
+        public double Evaluate(int[] itemsTaken)
+        {
+            throw new NotImplementedException();
         }
     }
 }
