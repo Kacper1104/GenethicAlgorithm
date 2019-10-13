@@ -6,6 +6,7 @@ namespace Genethic_Algorithm
 {
     class Specimen : ISpecimen
     {
+        int score;
         int[] genotype;
 
         public Specimen()
@@ -24,6 +25,10 @@ namespace Genethic_Algorithm
             throw new NotImplementedException();
         }
 
-        public double Evaluate(IProblem problem) => problem.Evaluate(genotype);
+        public double Evaluate(IProblem problem){
+            if(score = null) 
+                score = problem.Evaluate(genotype); 
+            return score;
+            }
     }
 }
