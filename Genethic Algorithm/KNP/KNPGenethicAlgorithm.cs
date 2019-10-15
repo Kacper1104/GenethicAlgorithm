@@ -129,13 +129,8 @@ namespace Genethic_Algorithm
 
         internal override void Mutation()
         {
-            Random random = new Random();
             for (int i = 0; i < populationSize; i++)
-            {
-                if (random.NextDouble() <= probX)
-                {
-                    population[i] = population[i].Mutate();
-                }
+                    population[i] = population[i].Mutate(probM);
             }
         }
 
