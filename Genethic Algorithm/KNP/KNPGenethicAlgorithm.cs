@@ -50,8 +50,8 @@ namespace Genethic_Algorithm
 
         internal override Specimen[] Initialize()
         {
-            int[] initialGenotype = new int[testData.Dimensions];
-            for (int i = 0; i < testData.Dimensions; i++)
+            int[] initialGenotype = new int[testData.ItemCount];
+            for (int i = 0; i < testData.ItemCount; i++)
             {
                 initialGenotype[i] = testData.genes[i];
             }
@@ -94,8 +94,8 @@ namespace Genethic_Algorithm
             {
                 bestScore = populationBestScore;
                 indexOfBestPopulation = indexOfCurrentPopulation;
-                bestGenotype = new int[testData.Dimensions];
-                for (int d = 0; d < testData.Dimensions; d++)
+                bestGenotype = new int[testData.ItemCount];
+                for (int d = 0; d < testData.ItemCount; d++)
                 {
                     bestGenotype[d] = population[bestSpecimenIndex].Genotype[d];
                 }
@@ -132,12 +132,11 @@ namespace Genethic_Algorithm
             for (int i = 0; i < populationSize; i++)
                     population[i] = population[i].Mutate(probM);
             }
-        }
 
         internal override Specimen[] Selection()
         {
             Specimen[] newPopulation = new Specimen[populationSize];
-            for(int i = 0; i < populationSize; i++)
+            for (int i = 0; i < populationSize; i++)
             {
                 newPopulation[i] = Tournament(population, tournamentSize); //tournament selection method
                 //newPopulation[i] = Roulette(population); //Roulette selection method
@@ -153,19 +152,19 @@ namespace Genethic_Algorithm
             double fittestScore = Double.MinValue;
             Specimen[] contestants = new KNPSpecimen[tournamentSize];
             int randomContestant = random.Next(populationSize);
-            for(int i = 0; i < tournamentSize; i++)
+            for (int i = 0; i < tournamentSize; i++)
             {
-                while(Array.Find(contestants, c => object.ReferenceEquals(c, population[randomContestant])) != null)
+                while (Array.Find(contestants, c => object.ReferenceEquals(c, population[randomContestant])) != null)
                 {
                     randomContestant = random.Next(populationSize);
                 }
                 contestants[i] = population[randomContestant];
             }
             double contestantScore;
-            foreach(KNPSpecimen contestant in contestants)
+            foreach (KNPSpecimen contestant in contestants)
             {
                 contestantScore = contestant.Evaluate(problem);
-                if(contestantScore > fittestScore)
+                if (contestantScore > fittestScore)
                 {
                     fittestScore = contestantScore;
                     fittest = new KNPSpecimen(contestant.Genotype, noschuffle);

@@ -9,9 +9,7 @@ namespace Genethic_Algorithm
     {
         double score;
         sbyte[] genotype;
-        int[] knapsacksLengths;
-        double[] knapsacksWeights;
-        int biggestKnapsackStart;
+        Loader testdata;
 
 
 
@@ -19,27 +17,25 @@ namespace Genethic_Algorithm
         {
         }
 
-        public KNPSpecimen(sbyte[] genotype, int[] knapsacksLengths, double[] knapsacksWeights)
+        public KNPSpecimen(int itemCount, int knapsackCount, bool schuffle)
         {
-            this.genotype = (sbyte[])genotype.Clone();
-            this.knapsacksLengths = (int[])knapsacksLengths.Clone();
-            this.knapsacksWeights = (double[])knapsacksWeights.Clone();
-            
-            biggestKnapsackStart = 0;
-            int maxValue = knapsacksLengths.Max();
-            int maxIndex = knapsacksLengths.ToList().IndexOf(maxValue);
-            for(int i = 0; i < maxIndex; i++)
+            this.genotype = new sbyte[itemCount*knapsackCount];
+            for(int i = 0; i < itemCount*knapsackCount; i++)
             {
-                biggestKnapsackStart += knapsacksLengths[i];
+                this.genotype[i] = 0;
             }
+        }
+
+        public KNPSpecimen(sbyte[] genotype, Loader testdata)
+        {
+            this.testdata = testdata;
+            this.genotype = (sbyte[])genotype.Clone();
         }
 
         public double Score { get => score; set => score = value; }
         public sbyte[] Genotype { get => genotype; set => genotype = value; }
-        public int[] KnapsackLengths { get => knapsacksLengths; set => knapsacksLengths = value; }
-        public double[] KnapsackWeights { get => knapsacksWeights; set => knapsacksWeights = value; }
 
-        public KNPSpecimen[] Crossover(KNPSpecimen partner)
+        internal override Specimen[] Crossover(Specimen partner)
         {
             throw new NotImplementedException();
         }
@@ -59,10 +55,11 @@ namespace Genethic_Algorithm
             }
         }
 
-        public double Evaluate(Problem problem){
+        internal override double Evaluate(Problem problem){
             if(score == null) 
                 score = problem.Evaluate(genotype); 
             return score;
-            }
+        }
+
     }
 }
