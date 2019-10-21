@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace Genethic_Algorithm
 {
@@ -6,7 +7,11 @@ namespace Genethic_Algorithm
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Loader testdata = new Loader("resources\\multi\\" + "p01" + ".csv");
+            testdata.readFile();
+            KNPGenethicAlgorithm algorithm = new KNPGenethicAlgorithm(100, 0.02, 0.7, 20, testdata, "");
+            algorithm.Initialize();
+            algorithm.Run();
         }
     }
 }

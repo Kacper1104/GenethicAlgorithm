@@ -5,61 +5,98 @@ using System.Linq;
 
 namespace Genethic_Algorithm
 {
-    class KNPSpecimen : Specimen
+    class KNPSpecimen
     {
+        //variables
         double score;
         sbyte[] genotype;
+        //params
         Loader testdata;
-
-
-
+        //constructors
         public KNPSpecimen()
         {
         }
-
-        public KNPSpecimen(int itemCount, int knapsackCount, bool schuffle)
-        {
-            this.genotype = new sbyte[itemCount*knapsackCount];
-            for(int i = 0; i < itemCount*knapsackCount; i++)
-            {
-                this.genotype[i] = 0;
-            }
-        }
-
         public KNPSpecimen(sbyte[] genotype, Loader testdata)
         {
             this.testdata = testdata;
-            this.genotype = (sbyte[])genotype.Clone();
+            this.genotype = genotype;
         }
-
+        //getters and setters
         public double Score { get => score; set => score = value; }
         public sbyte[] Genotype { get => genotype; set => genotype = value; }
-
-        internal override Specimen[] Crossover(Specimen partner)
+        //methods
+        internal KNPSpecimen[] Crossover(KNPSpecimen partner, double probX)
         {
-            throw new NotImplementedException();
-        }
-
-        internal override Specimen Mutate(double probM)
-        {
-            Random random = new Random();
-            for(int i = 0; i < genotype.Length; i++)
+            sbyte[] child1Genotype = new sbyte[testdata.ItemCount*testdata.KnapsackCount];
+            sbyte[] child2Genotype = new sbyte[testdata.ItemCount * testdata.KnapsackCount];
+            Random rn = new Random();
+            int cutover = rn.Next(testdata.ItemCount*testdata.KnapsackCount);
+            for(int i = 0; i < testdata.ItemCount*testdata.KnapsackCount; i++)
             {
-                if (random.NextDouble() <= probM)
+                if (i < cutover)
                 {
-                    if()
-                    if (genotype[i] == 0) genotype[i] = 1;
-                    else genotype[i] = 0;
-                    
+                    child1Genotype[i] = this.genotype[i];
+                    child2Genotype[i] = partner.Genotype[i];
+                }
+                else
+                {
+                    child1Genotype[i] = partner.Genotype[i];
+                    child2Genotype[i] = this.genotype[i];
                 }
             }
-        }
-
-        internal override double Evaluate(Problem problem){
+            child1Genotype = FixGenotype(child1Genotype, cutover);
+            child2Genotype = FixGenotype(child2Genotype, cutover);
+            return new KNPSpecimen[] { new KNPSpecimen(child1Genotype, testdata), new KNPSpecimen(child2Genotype, testdata) };
+        }//End of Crossover()
+        private sbyte[] FixGenotype(sbyte[] genotype, int startIdx)
+        {
+            sbyte[] fixedGenotype = (sbyte[])genotype.Clone();
+            for(int i = startIdx / testdata.ItemCount; i < testdata.KnapsackCount; i++)//for each knapsack from cutover to n
+            {
+                for(int j = 0; j < testdata.ItemCount; j++)//for each item
+                {
+                    for(int k = 0; k < startIdx / testdata.ItemCount; k++)//for each knapsack from 0 to cutover
+                    {
+                        if(genotype[i*testdata.ItemCount+j] == 1 && genotype[k*testdata.ItemCount+j] == 1)
+                        {
+                            fixedGenotype[i * testdata.ItemCount + j] = 0;
+                        }
+                    }
+                }
+            }
+            return fixedGenotype;
+        }//End of FixGenotype();
+        internal KNPSpecimen Mutate(double probM)
+        {
+            Random random = new Random();
+            sbyte[] newGenotype = (sbyte[])genotype.Clone();
+            for(int i = 0; i < testdata.KnapsackCount; i++)//for each knapsack
+            {
+                for(int j = 0; j < testdata.ItemCount; j++)//for each item
+                {
+                    if (random.NextDouble() <= probM)
+                    {
+                        if(testdata.MainKnapsackIdx == i || newGenotype[testdata.MainKnapsackIdx * testdata.ItemCount + j] == 0)
+                        {
+                            if (newGenotype[i*testdata.ItemCount+j] == 0)
+                            {
+                                newGenotype[i* testdata.ItemCount + j] = 1;
+                            }
+                            else
+                            {
+                                newGenotype[i* testdata.ItemCount + j] = 0;
+                            }
+                        }
+                    }
+                }
+            }
+            return new KNPSpecimen(newGenotype, testdata);
+        }//End of Mutate()
+        internal double Evaluate(KNPProblem problem){
             if(score == null) 
                 score = problem.Evaluate(genotype); 
             return score;
-        }
+        }//End of Evaluate();
 
     }
 }

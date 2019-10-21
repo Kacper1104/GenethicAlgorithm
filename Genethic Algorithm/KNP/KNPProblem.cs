@@ -4,28 +4,20 @@ using System.Text;
 
 namespace Genethic_Algorithm
 {
-    internal class KNPProblem : Problem
+    internal class KNPProblem
     {
+        //params
         Loader testData;
-        double[] values;
-        double[] weights;
-        int itemsNumber;
-        double knapsackCapacity;
-
+        //constructors
         public KNPProblem()
         {
         }
-
         public KNPProblem(Loader testData)
         {
             this.testData = testData;
-            values = testData.values;
-            weights = testData.weights;
-            itemsNumber = testData.itemsNumber;
-            knapsackCapacity = testData.kapsackCapacity;
         }
-
-        internal override double Evaluate(int[] itemsTaken)
+        //methods
+        internal double Evaluate(sbyte[] genotype)
         {
             throw new NotImplementedException();
         }

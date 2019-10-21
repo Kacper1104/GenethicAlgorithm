@@ -2,11 +2,35 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Linq;
 
 namespace Genethic_Algorithm
 {
-    class KNPGenethicAlgorithm : GenethicAlgorithm
+    class KNPGenethicAlgorithm
     {
+        //PARAMS
+        protected int populationSize;
+        protected double probM;
+        protected double probX;
+        protected int tournamentSize;
+        protected StreamWriter fileWriter;
+        protected Loader testdata;
+        protected KNPProblem problem;
+
+        //VARIABLES
+        protected KNPSpecimen[] population;
+        protected int indexOfCurrentPopulation;
+        protected int indexOfBestPopulation;
+        protected double bestScore;
+        protected sbyte[] bestGenotype;
+        protected double populationBestScore;
+        protected double populationWorstScore;
+        protected double populationAvarageScore;
+
+        //CONSTANTS
+        protected const int POPULATIONS_PRINTER_INTERVAL = 100;
+        protected const int ALGORITHM_STOP_MARKER = 5000;
+        protected const double INITIAL_GENOTYPE_PROBABILITY = 0.3;
 
         public KNPGenethicAlgorithm(int populationSize, double probM, double probX, int tournamentSize, Loader testData, string outputDataFile)
         {
@@ -14,7 +38,7 @@ namespace Genethic_Algorithm
             this.probM = probM;
             this.probX = probX;
             this.tournamentSize = tournamentSize;
-            this.testData = testData;
+            this.testdata = testData;
             this.problem = new KNPProblem(testData);
 
             try
@@ -29,7 +53,7 @@ namespace Genethic_Algorithm
             //Add CSV printer
         }
 
-        internal override void Run()
+        internal void Run()
         {
             while (true)
             {
@@ -48,19 +72,26 @@ namespace Genethic_Algorithm
             Console.WriteLine("Algorithm has finished.");
         }
 
-        internal override Specimen[] Initialize()
+        internal KNPSpecimen[] Initialize()
         {
-            int[] initialGenotype = new int[testData.ItemCount];
-            for (int i = 0; i < testData.ItemCount; i++)
+            Random rnd = new Random();
+            sbyte[] initialGenotype = new sbyte[testdata.ItemCount*testdata.KnapsackCount];
+            for (int i = 0; i < testdata.ItemCount*testdata.KnapsackCount; i++)
             {
-                initialGenotype[i] = testData.genes[i];
+                if(i < INITIAL_GENOTYPE_PROBABILITY*testdata.ItemCount*testdata.KnapsackCount)
+                {
+                    initialGenotype[i] = 1;
+                }
+                else
+                {
+                    initialGenotype[i] = 0;
+                }
             }
             population = new KNPSpecimen[populationSize];
-            Specimen ancestor;
-            for(int i = 0; i < populationSize; i++)
+            for (int i = 0; i < populationSize; i++)
             {
-                ancestor = new KNPSpecimen(initialGenotype, testData.maxSpeed, testData.minSpeed, SHUFFLE, problem);
-                population[i] = ancestor;
+                sbyte[] shuffledGenotype = initialGenotype.OrderBy(x => rnd.Next()).ToArray(); //shuffle initial genotype
+                population[i] = new KNPSpecimen((sbyte[])shuffledGenotype.Clone(), testdata);
             }
             indexOfCurrentPopulation = 0;
             indexOfBestPopulation = 0;
@@ -69,7 +100,7 @@ namespace Genethic_Algorithm
             return population;
         }
 
-        internal override void Evaluate()
+        internal void Evaluate()
         {
             populationBestScore = double.MinValue;
             populationWorstScore = double.MaxValue;
@@ -94,11 +125,7 @@ namespace Genethic_Algorithm
             {
                 bestScore = populationBestScore;
                 indexOfBestPopulation = indexOfCurrentPopulation;
-                bestGenotype = new int[testData.ItemCount];
-                for (int d = 0; d < testData.ItemCount; d++)
-                {
-                    bestGenotype[d] = population[bestSpecimenIndex].Genotype[d];
-                }
+                bestGenotype = (sbyte[])population[bestSpecimenIndex].Genotype.Clone();
             }
             try
             {
@@ -112,30 +139,29 @@ namespace Genethic_Algorithm
             {
                 PrintScore();
             }
-        }
-        internal override void Crossover()
+        }//End of Evaluation()
+
+        internal void Crossover()
         {
-            Random random = new Random();
             for(int i = 0; i < populationSize; i += 2)
             {
-                if(random.NextDouble() <= probX)
-                {
-                    Specimen[] children = population[i].Crossover(population[i + 1]);
-                    population[i] = children[0];
-                    population[i + 1] = children[1];
-                }
+                KNPSpecimen[] children = population[i].Crossover(population[i+1], probX);
+                population[i] = children[0];
+                population[i + 1] = children[1];
             }
-        }
+        }//End of Crossover()
 
-        internal override void Mutation()
+        internal void Mutation()
         {
             for (int i = 0; i < populationSize; i++)
-                    population[i] = population[i].Mutate(probM);
+            {
+                population[i] = population[i].Mutate(probM);
             }
+        }//End of Mutation()
 
-        internal override Specimen[] Selection()
+        internal KNPSpecimen[] Selection()
         {
-            Specimen[] newPopulation = new Specimen[populationSize];
+            KNPSpecimen[] newPopulation = new KNPSpecimen[populationSize];
             for (int i = 0; i < populationSize; i++)
             {
                 newPopulation[i] = Tournament(population, tournamentSize); //tournament selection method
@@ -143,14 +169,14 @@ namespace Genethic_Algorithm
                 //newPopulation[i] = RandomSpecimen(population); //'Random' selection method
             }
             return newPopulation;
-        }
+        }//End of Selection()
 
-        internal override Specimen Tournament(Specimen[] population, int tournamentSize)
+        internal KNPSpecimen Tournament(KNPSpecimen[] population, int tournamentSize)
         {
             Random random = new Random();
-            Specimen fittest = new KNPSpecimen();
+            KNPSpecimen fittest = new KNPSpecimen();
             double fittestScore = Double.MinValue;
-            Specimen[] contestants = new KNPSpecimen[tournamentSize];
+            KNPSpecimen[] contestants = new KNPSpecimen[tournamentSize];
             int randomContestant = random.Next(populationSize);
             for (int i = 0; i < tournamentSize; i++)
             {
@@ -167,13 +193,13 @@ namespace Genethic_Algorithm
                 if (contestantScore > fittestScore)
                 {
                     fittestScore = contestantScore;
-                    fittest = new KNPSpecimen(contestant.Genotype, noschuffle);
+                    fittest = new KNPSpecimen((sbyte[])contestant.Genotype.Clone(), testdata);
                 }
             }
             return fittest;
-        }
+        }//End of Tournament
 
-        internal override void PrintScore()
+        internal void PrintScore()
         {
             Console.WriteLine("Population index: " + indexOfCurrentPopulation);
             Console.WriteLine("Population best score: " + populationBestScore);
@@ -182,7 +208,7 @@ namespace Genethic_Algorithm
             Console.WriteLine("-------------------------------------");
             Console.WriteLine("Best score ever: " + bestScore);
             Console.WriteLine("Best population index: " + indexOfBestPopulation);
-            Console.WriteLine();
+            Console.WriteLine("Best population genotype: "+bestGenotype.ToString());
         }
     }
 }
