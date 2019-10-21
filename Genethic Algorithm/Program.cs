@@ -9,7 +9,7 @@ namespace Genethic_Algorithm
         {
             Loader testdata = new Loader("resources\\multi\\" + "p01" + ".csv");
             testdata.readFile();
-            KNPGenethicAlgorithm algorithm = new KNPGenethicAlgorithm(100, 0.02, 0.7, 20, testdata, "");
+            KNPGenethicAlgorithm algorithm = new KNPGenethicAlgorithm(100, 0.05, 0.7, 5, 20, testdata, "test.csv");
             algorithm.Initialize();
             algorithm.Run();
         }

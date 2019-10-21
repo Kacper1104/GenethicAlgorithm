@@ -28,18 +28,18 @@ namespace Genethic_Algorithm
         protected double populationAvarageScore;
 
         //CONSTANTS
-        protected const int POPULATIONS_PRINTER_INTERVAL = 100;
+        protected const int POPULATIONS_PRINTER_INTERVAL = 1000;
         protected const int ALGORITHM_STOP_MARKER = 5000;
         protected const double INITIAL_GENOTYPE_PROBABILITY = 0.3;
 
-        public KNPGenethicAlgorithm(int populationSize, double probM, double probX, int tournamentSize, Loader testData, string outputDataFile)
+        public KNPGenethicAlgorithm(int populationSize, double probM, double probX, int penalty, int tournamentSize, Loader testData, string outputDataFile)
         {
             this.populationSize = populationSize;
             this.probM = probM;
             this.probX = probX;
             this.tournamentSize = tournamentSize;
             this.testdata = testData;
-            this.problem = new KNPProblem(testData);
+            this.problem = new KNPProblem(testData, penalty) ;
 
             try
             {
@@ -135,7 +135,7 @@ namespace Genethic_Algorithm
             {
                 Console.WriteLine(ex.StackTrace);
             }
-            if(indexOfBestPopulation%POPULATIONS_PRINTER_INTERVAL == 0)
+            if(indexOfCurrentPopulation % POPULATIONS_PRINTER_INTERVAL == 0)
             {
                 PrintScore();
             }
@@ -208,7 +208,7 @@ namespace Genethic_Algorithm
             Console.WriteLine("-------------------------------------");
             Console.WriteLine("Best score ever: " + bestScore);
             Console.WriteLine("Best population index: " + indexOfBestPopulation);
-            Console.WriteLine("Best population genotype: "+bestGenotype.ToString());
+            Console.WriteLine("Best population genotype: "+bestGenotype);
         }
     }
 }

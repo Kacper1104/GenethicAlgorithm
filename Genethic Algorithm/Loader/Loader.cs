@@ -14,6 +14,7 @@ namespace Genethic_Algorithm
         int[] itemValues;
         int[] itemWeights;
         int mainKnapsackIdx;
+        int knapsackCapacitiesSum;
 
         //Constructors
         public Loader(string filepath) { this.filepath = filepath; }
@@ -24,6 +25,7 @@ namespace Genethic_Algorithm
         public int[] ItemValues { get => itemValues; set => itemValues = value; }
         public int[] ItemWeights { get => itemWeights; set => itemWeights = value; }
         public int MainKnapsackIdx { get => mainKnapsackIdx; set => mainKnapsackIdx = value; }
+        public int KnapsackCapacitiesSum { get => knapsackCapacitiesSum; set => knapsackCapacitiesSum = value; }
         //Methods
         public void readFile()
         {
@@ -36,6 +38,7 @@ namespace Genethic_Algorithm
             line = sr.ReadLine(); //<capacity_knapsack_0>,...,<capacity_knapsack_n>
             split = line.Split(',');
             knapsacksCapacities = new int[knapsackCount];
+            knapsackCapacitiesSum = 0;
             for(int i = 0; i < knapsackCount; i++)
             {
                 knapsacksCapacities[i] = int.Parse(split[i]);
@@ -43,6 +46,7 @@ namespace Genethic_Algorithm
                 {
                     mainKnapsackIdx = i;
                 }
+                knapsackCapacitiesSum += knapsacksCapacities[i];
             }
             itemValues = new int[itemCount];
             itemWeights = new int[itemCount];
