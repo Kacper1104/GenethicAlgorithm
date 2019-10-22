@@ -7,9 +7,18 @@ namespace Genethic_Algorithm
     {
         static void Main(string[] args)
         {
-            Loader testdata = new Loader("resources\\multi\\" + "p01" + ".csv");
+            Loader testdata;
+            KNPGenethicAlgorithm algorithm;
+            //testdata = new Loader("resources\\single\\" + "p01" + ".csv", false);
+            //testdata.readFile();
+            //algorithm = new KNPGenethicAlgorithm(100, 0.05, 0.7, 5000, 20, testdata, "test.csv");
+            //algorithm.Initialize();
+            //algorithm.Run();
+
+            //multi
+            testdata = new Loader("resources\\multi\\" + "p01" + ".csv", true);
             testdata.readFile();
-            KNPGenethicAlgorithm algorithm = new KNPGenethicAlgorithm(100, 0.05, 0.7, 5, 20, testdata, "test.csv");
+            algorithm = new KNPGenethicAlgorithm(100, 0.05, 0.7, 5000, 20, testdata, "test.csv");
             algorithm.Initialize();
             algorithm.Run();
         }

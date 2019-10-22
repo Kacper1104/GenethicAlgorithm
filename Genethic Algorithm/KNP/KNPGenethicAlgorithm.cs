@@ -28,8 +28,8 @@ namespace Genethic_Algorithm
         protected double populationAvarageScore;
 
         //CONSTANTS
-        protected const int POPULATIONS_PRINTER_INTERVAL = 1000;
-        protected const int ALGORITHM_STOP_MARKER = 5000;
+        protected const int POPULATIONS_PRINTER_INTERVAL = 250;
+        protected const int ALGORITHM_STOP_MARKER = 2500;
         protected const double INITIAL_GENOTYPE_PROBABILITY = 0.3;
 
         public KNPGenethicAlgorithm(int populationSize, double probM, double probX, int penalty, int tournamentSize, Loader testData, string outputDataFile)
@@ -58,7 +58,7 @@ namespace Genethic_Algorithm
             while (true)
             {
                 Evaluate();
-                if (indexOfCurrentPopulation - indexOfBestPopulation >= ALGORITHM_STOP_MARKER)
+                if (indexOfCurrentPopulation >= ALGORITHM_STOP_MARKER)// (indexOfCurrentPopulation - indexOfBestPopulation >= ALGORITHM_STOP_MARKER)
                 {
                     break;
                 }
@@ -74,6 +74,7 @@ namespace Genethic_Algorithm
 
         internal KNPSpecimen[] Initialize()
         {
+            //create initial genotypes
             Random rnd = new Random();
             sbyte[] initialGenotype = new sbyte[testdata.ItemCount*testdata.KnapsackCount];
             for (int i = 0; i < testdata.ItemCount*testdata.KnapsackCount; i++)
@@ -91,8 +92,11 @@ namespace Genethic_Algorithm
             for (int i = 0; i < populationSize; i++)
             {
                 sbyte[] shuffledGenotype = initialGenotype.OrderBy(x => rnd.Next()).ToArray(); //shuffle initial genotype
-                population[i] = new KNPSpecimen((sbyte[])shuffledGenotype.Clone(), testdata);
+                KNPSpecimen grandpa = new KNPSpecimen(shuffledGenotype, testdata);
+                grandpa.Genotype = grandpa.FixGenotype(shuffledGenotype);
+                population[i] = grandpa;
             }
+            
             indexOfCurrentPopulation = 0;
             indexOfBestPopulation = 0;
             bestScore = double.MinValue;
@@ -121,6 +125,7 @@ namespace Genethic_Algorithm
                 }
                 populationAvarageScore += score;
             }
+            populationAvarageScore = populationAvarageScore / populationSize;
             if (populationBestScore > bestScore)
             {
                 bestScore = populationBestScore;
@@ -208,7 +213,16 @@ namespace Genethic_Algorithm
             Console.WriteLine("-------------------------------------");
             Console.WriteLine("Best score ever: " + bestScore);
             Console.WriteLine("Best population index: " + indexOfBestPopulation);
-            Console.WriteLine("Best population genotype: "+bestGenotype);
+            Console.Write("Best population genotype: ");
+            for(int i = 0; i < testdata.KnapsackCount*testdata.ItemCount; i++)
+            {
+                if(i % testdata.ItemCount == 0)
+                {
+                    Console.WriteLine();
+                }
+                Console.Write(bestGenotype[i]);
+            }
+            Console.WriteLine("\n");
         }
     }
 }

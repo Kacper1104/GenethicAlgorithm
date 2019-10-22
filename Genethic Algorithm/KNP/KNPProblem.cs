@@ -16,6 +16,7 @@ namespace Genethic_Algorithm
         public KNPProblem(Loader testcata, int penalty)
         {
             this.testdata = testcata;
+            this.penalty = penalty;
         }
         //methods
         internal double Evaluate(sbyte[] genotype)
@@ -24,7 +25,6 @@ namespace Genethic_Algorithm
             //jesli suma wag jest wieksza niz pojemnosc, to kara
             double value = 0;
             double weight = 0;
-            bool tooHeavy = false;
             for(int i = 0; i < testdata.KnapsackCount; i++)//for each knapsack
             {
                 for(int j = 0; j < testdata.ItemCount; j++)//for each item

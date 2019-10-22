@@ -13,13 +13,12 @@ namespace Genethic_Algorithm
         //params
         Loader testdata;
         //constructors
-        public KNPSpecimen()
-        {
-        }
+        public KNPSpecimen() { }
         public KNPSpecimen(sbyte[] genotype, Loader testdata)
         {
             this.testdata = testdata;
             this.genotype = genotype;
+            this.score = double.MinValue;
         }
         //getters and setters
         public double Score { get => score; set => score = value; }
@@ -27,45 +26,52 @@ namespace Genethic_Algorithm
         //methods
         internal KNPSpecimen[] Crossover(KNPSpecimen partner, double probX)
         {
-            sbyte[] child1Genotype = new sbyte[testdata.ItemCount*testdata.KnapsackCount];
-            sbyte[] child2Genotype = new sbyte[testdata.ItemCount * testdata.KnapsackCount];
             Random rn = new Random();
-            int cutover = rn.Next(testdata.ItemCount*testdata.KnapsackCount);
-            for(int i = 0; i < testdata.ItemCount*testdata.KnapsackCount; i++)
+            if (rn.NextDouble() <= probX)
             {
-                if (i < cutover)
+                sbyte[] child1Genotype = new sbyte[testdata.ItemCount * testdata.KnapsackCount];
+                sbyte[] child2Genotype = new sbyte[testdata.ItemCount * testdata.KnapsackCount];
+                int cutover = rn.Next(testdata.ItemCount * testdata.KnapsackCount);
+                for (int i = 0; i < testdata.ItemCount * testdata.KnapsackCount; i++)
                 {
-                    child1Genotype[i] = this.genotype[i];
-                    child2Genotype[i] = partner.Genotype[i];
-                }
-                else
-                {
-                    child1Genotype[i] = partner.Genotype[i];
-                    child2Genotype[i] = this.genotype[i];
-                }
-            }
-            child1Genotype = FixGenotype(child1Genotype, cutover);
-            child2Genotype = FixGenotype(child2Genotype, cutover);
-            return new KNPSpecimen[] { new KNPSpecimen(child1Genotype, testdata), new KNPSpecimen(child2Genotype, testdata) };
-        }//End of Crossover()
-        private sbyte[] FixGenotype(sbyte[] genotype, int startIdx)
-        {
-            sbyte[] fixedGenotype = (sbyte[])genotype.Clone();
-            for(int i = startIdx / testdata.ItemCount; i < testdata.KnapsackCount; i++)//for each knapsack from cutover to n
-            {
-                for(int j = 0; j < testdata.ItemCount; j++)//for each item
-                {
-                    for(int k = 0; k < startIdx / testdata.ItemCount; k++)//for each knapsack from 0 to cutover
+                    if (i < cutover)
                     {
-                        if(genotype[i*testdata.ItemCount+j] == 1 && genotype[k*testdata.ItemCount+j] == 1)
+                        child1Genotype[i] = this.genotype[i];
+                        child2Genotype[i] = partner.Genotype[i];
+                    }
+                    else
+                    {
+                        child1Genotype[i] = partner.Genotype[i];
+                        child2Genotype[i] = this.genotype[i];
+                    }
+                }
+                child1Genotype = FixGenotype(child1Genotype);
+                child2Genotype = FixGenotype(child2Genotype);
+                return new KNPSpecimen[] { new KNPSpecimen(child1Genotype, testdata), new KNPSpecimen(child2Genotype, testdata) };
+            }
+            return new KNPSpecimen[] { new KNPSpecimen((sbyte[])this.genotype.Clone(), testdata), new KNPSpecimen((sbyte[])partner.genotype.Clone(), testdata) };
+        }//End of Crossover()
+        public sbyte[] FixGenotype(sbyte[] genotypeToCheck)
+        {
+            bool itemFound;
+            sbyte[] fixedGenotype = (sbyte[])genotypeToCheck.Clone();
+                for (int i = 0; i < testdata.ItemCount; i++)//for each item
+                {
+                    itemFound = false;
+                    for (int j = 0; j < testdata.KnapsackCount; j++)//for each knapsack
+                    {
+                        if (genotypeToCheck[j * testdata.ItemCount + i] == 1)//if item is already taken
                         {
-                            fixedGenotype[i * testdata.ItemCount + j] = 0;
+                            if (itemFound)
+                            {
+                                fixedGenotype[j * testdata.ItemCount + i] = 0;//throw it away from every other knapsack
+                            }
+                            itemFound = true;
                         }
                     }
                 }
-            }
             return fixedGenotype;
-        }//End of FixGenotype();
+        }//End of FixGenotype()
         internal KNPSpecimen Mutate(double probM)
         {
             Random random = new Random();
@@ -90,10 +96,11 @@ namespace Genethic_Algorithm
                     }
                 }
             }
+            newGenotype = FixGenotype(newGenotype);
             return new KNPSpecimen(newGenotype, testdata);
         }//End of Mutate()
         internal double Evaluate(KNPProblem problem){
-            if(score == null) 
+            if(score == double.MinValue) 
                 score = problem.Evaluate(genotype); 
             return score;
         }//End of Evaluate();

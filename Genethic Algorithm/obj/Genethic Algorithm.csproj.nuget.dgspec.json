@@ -1,20 +1,21 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Studia\\GenethicAlgorithm\\Genethic Algorithm\\Genethic Algorithm.csproj": {}
+    "C:\\Users\\Kacper\\source\\repos\\GenethicAlgorithm\\Genethic Algorithm\\Genethic Algorithm.csproj": {}
   },
   "projects": {
-    "C:\\Studia\\GenethicAlgorithm\\Genethic Algorithm\\Genethic Algorithm.csproj": {
+    "C:\\Users\\Kacper\\source\\repos\\GenethicAlgorithm\\Genethic Algorithm\\Genethic Algorithm.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Studia\\GenethicAlgorithm\\Genethic Algorithm\\Genethic Algorithm.csproj",
+        "projectUniqueName": "C:\\Users\\Kacper\\source\\repos\\GenethicAlgorithm\\Genethic Algorithm\\Genethic Algorithm.csproj",
         "projectName": "Genethic Algorithm",
-        "projectPath": "C:\\Studia\\GenethicAlgorithm\\Genethic Algorithm\\Genethic Algorithm.csproj",
+        "projectPath": "C:\\Users\\Kacper\\source\\repos\\GenethicAlgorithm\\Genethic Algorithm\\Genethic Algorithm.csproj",
         "packagesPath": "C:\\Users\\Kacper\\.nuget\\packages\\",
-        "outputPath": "C:\\Studia\\GenethicAlgorithm\\Genethic Algorithm\\obj\\",
+        "outputPath": "C:\\Users\\Kacper\\source\\repos\\GenethicAlgorithm\\Genethic Algorithm\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "D:\\Microsoft\\Xamarin\\NuGet\\"
+          "D:\\Microsoft\\Xamarin\\NuGet\\",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
           "C:\\Users\\Kacper\\AppData\\Roaming\\NuGet\\NuGet.Config",
