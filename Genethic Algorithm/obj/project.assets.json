@@ -2,10 +2,10 @@
   "version": 3,
   "targets": {
     ".NETCoreApp,Version=v2.1": {
-      "CsvHelper/12.1.2": {
+      "CsvHelper/12.2.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.CSharp": "4.4.0",
+          "Microsoft.CSharp": "4.5.0",
           "System.Reflection.TypeExtensions": "4.4.0"
         },
         "compile": {
@@ -15,7 +15,7 @@
           "lib/netstandard2.0/CsvHelper.dll": {}
         }
       },
-      "Microsoft.CSharp/4.4.0": {
+      "Microsoft.CSharp/4.5.0": {
         "type": "package",
         "compile": {
           "ref/netcoreapp2.0/_._": {}
@@ -242,25 +242,24 @@
     }
   },
   "libraries": {
-    "CsvHelper/12.1.2": {
-      "sha512": "SpMsKw74xuAMsYZ+tSQsHF9UYlZm6E+LBSwDPukGCy1dYLVJwM6ZR7gFhKWDMh7OR/1ba8t4UV/RraMJKx+mog==",
+    "CsvHelper/12.2.1": {
+      "sha512": "I5TYySBQQWQFEFAFFhN0YUvc1xpTH1A9w/vBdtAwopYKtbgaJ0ExM0j8l4d2mNrP+BSfuHULQEnqmx4N7yBcsA==",
       "type": "package",
-      "path": "csvhelper/12.1.2",
+      "path": "csvhelper/12.2.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "csvhelper.12.1.2.nupkg.sha512",
+        "csvhelper.12.2.1.nupkg.sha512",
         "csvhelper.nuspec",
         "lib/net45/CsvHelper.dll",
-        "lib/net45/CsvHelper.xml",
-        "lib/netstandard2.0/CsvHelper.dll",
-        "lib/netstandard2.0/CsvHelper.xml"
+        "lib/net47/CsvHelper.dll",
+        "lib/netstandard2.0/CsvHelper.dll"
       ]
     },
-    "Microsoft.CSharp/4.4.0": {
-      "sha512": "vvVR/B08YVghQ4jHEloxqw2ZWzEGE1AOA5E0DioUM3ujbXz6FD3AfB/0Jl2ohJPd0nXYGwmPe1En6HTsSriq1A==",
+    "Microsoft.CSharp/4.5.0": {
+      "sha512": "kaj6Wb4qoMuH3HySFJhxwQfe8R/sJsNJnANrvv8WdFPMoNbKY5htfNscv+LHCu5ipz+49m2e+WQXpLXr9XYemQ==",
       "type": "package",
-      "path": "microsoft.csharp/4.4.0",
+      "path": "microsoft.csharp/4.5.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -274,6 +273,7 @@
         "lib/netstandard1.3/Microsoft.CSharp.dll",
         "lib/netstandard2.0/Microsoft.CSharp.dll",
         "lib/portable-net45+win8+wp8+wpa81/_._",
+        "lib/uap10.0.16299/_._",
         "lib/win8/_._",
         "lib/wp80/_._",
         "lib/wpa81/_._",
@@ -281,7 +281,7 @@
         "lib/xamarinmac20/_._",
         "lib/xamarintvos10/_._",
         "lib/xamarinwatchos10/_._",
-        "microsoft.csharp.4.4.0.nupkg.sha512",
+        "microsoft.csharp.4.5.0.nupkg.sha512",
         "microsoft.csharp.nuspec",
         "ref/MonoAndroid10/_._",
         "ref/MonoTouch10/_._",
@@ -312,6 +312,7 @@
         "ref/netstandard2.0/Microsoft.CSharp.dll",
         "ref/netstandard2.0/Microsoft.CSharp.xml",
         "ref/portable-net45+win8+wp8+wpa81/_._",
+        "ref/uap10.0.16299/_._",
         "ref/win8/_._",
         "ref/wp80/_._",
         "ref/wpa81/_._",
@@ -860,7 +861,7 @@
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v2.1": [
-      "CsvHelper >= 12.1.2",
+      "CsvHelper >= 12.2.1",
       "Microsoft.NETCore.App >= 2.1.0"
     ]
   },
@@ -872,11 +873,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Kacper\\source\\repos\\GenethicAlgorithm\\Genethic Algorithm\\Genethic Algorithm.csproj",
+      "projectUniqueName": "D:\\Studia\\7 semestr\\GenethicAlgorithm\\Genethic Algorithm\\Genethic Algorithm.csproj",
       "projectName": "Genethic Algorithm",
-      "projectPath": "C:\\Users\\Kacper\\source\\repos\\GenethicAlgorithm\\Genethic Algorithm\\Genethic Algorithm.csproj",
+      "projectPath": "D:\\Studia\\7 semestr\\GenethicAlgorithm\\Genethic Algorithm\\Genethic Algorithm.csproj",
       "packagesPath": "C:\\Users\\Kacper\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Kacper\\source\\repos\\GenethicAlgorithm\\Genethic Algorithm\\obj\\",
+      "outputPath": "D:\\Studia\\7 semestr\\GenethicAlgorithm\\Genethic Algorithm\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "D:\\Microsoft\\Xamarin\\NuGet\\",
@@ -910,7 +911,7 @@
         "dependencies": {
           "CsvHelper": {
             "target": "Package",
-            "version": "[12.1.2, )"
+            "version": "[12.2.1, )"
           },
           "Microsoft.NETCore.App": {
             "suppressParent": "All",

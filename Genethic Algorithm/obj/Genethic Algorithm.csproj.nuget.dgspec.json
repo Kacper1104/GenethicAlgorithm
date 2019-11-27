@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Kacper\\source\\repos\\GenethicAlgorithm\\Genethic Algorithm\\Genethic Algorithm.csproj": {}
+    "D:\\Studia\\7 semestr\\GenethicAlgorithm\\Genethic Algorithm\\Genethic Algorithm.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Kacper\\source\\repos\\GenethicAlgorithm\\Genethic Algorithm\\Genethic Algorithm.csproj": {
+    "D:\\Studia\\7 semestr\\GenethicAlgorithm\\Genethic Algorithm\\Genethic Algorithm.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Kacper\\source\\repos\\GenethicAlgorithm\\Genethic Algorithm\\Genethic Algorithm.csproj",
+        "projectUniqueName": "D:\\Studia\\7 semestr\\GenethicAlgorithm\\Genethic Algorithm\\Genethic Algorithm.csproj",
         "projectName": "Genethic Algorithm",
-        "projectPath": "C:\\Users\\Kacper\\source\\repos\\GenethicAlgorithm\\Genethic Algorithm\\Genethic Algorithm.csproj",
+        "projectPath": "D:\\Studia\\7 semestr\\GenethicAlgorithm\\Genethic Algorithm\\Genethic Algorithm.csproj",
         "packagesPath": "C:\\Users\\Kacper\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Kacper\\source\\repos\\GenethicAlgorithm\\Genethic Algorithm\\obj\\",
+        "outputPath": "D:\\Studia\\7 semestr\\GenethicAlgorithm\\Genethic Algorithm\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "D:\\Microsoft\\Xamarin\\NuGet\\",
@@ -45,7 +45,7 @@
           "dependencies": {
             "CsvHelper": {
               "target": "Package",
-              "version": "[12.1.2, )"
+              "version": "[12.2.1, )"
             },
             "Microsoft.NETCore.App": {
               "suppressParent": "All",

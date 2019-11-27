@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Linq;
+using CsvHelper;
 
 namespace Genethic_Algorithm
 {
@@ -32,6 +33,9 @@ namespace Genethic_Algorithm
         protected const int ALGORITHM_STOP_MARKER = 2500;
         protected const double INITIAL_GENOTYPE_PROBABILITY = 0.3;
 
+        //printer
+
+
         public KNPGenethicAlgorithm(int populationSize, double probM, double probX, int penalty, int tournamentSize, Loader testData, string outputDataFile)
         {
             this.populationSize = populationSize;
@@ -51,6 +55,7 @@ namespace Genethic_Algorithm
             }
 
             //Add CSV printer
+            File.AppendAllText();
         }
 
         internal void Run()
