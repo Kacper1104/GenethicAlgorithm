@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import services.CsvStatisticsHolder;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -25,9 +26,10 @@ public final class DataSet {
     }
 
     public static DataSet getInstance() {
-        return INSTANCE == null
-                ? new DataSet()
-                : INSTANCE;
+        if(INSTANCE == null) {
+            INSTANCE = new DataSet();
+        }
+        return INSTANCE;
     }
 
     public int getNumberOfCities() {

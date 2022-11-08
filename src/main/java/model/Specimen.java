@@ -2,12 +2,16 @@ package model;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
-@Builder
+
 public class Specimen {
 
     private final DataSet dataSet;
@@ -17,7 +21,7 @@ public class Specimen {
     private List<City> citiesVisitedInOrder;
     @Getter
     @Setter
-    private Double objectiveFunction;
+    private Double objectiveFunction = Double.MAX_VALUE;
     @Getter
     @Setter
     private List<Double> currentVelocity;
@@ -28,7 +32,7 @@ public class Specimen {
     @Setter
     private List<Double> currentPosition;
 
-    private Random random;
+    private final Random random;
 
     public Specimen() {
         this.dataSet = DataSet.getInstance();
@@ -83,43 +87,68 @@ public class Specimen {
         return totalDistance;
     }
 
-    private double calculateDistance(City city, City otherCity)
-    {
+    private double calculateDistance(City city, City otherCity) {
+        //var cityInMatrix = dataSet.getDistanceMatrix().get(city);
+        //var distance = cityInMatrix.get(otherCity);
+        //return distance;
         return dataSet.getDistanceMatrix().get(city).get(otherCity);
     }
 
     public Specimen deepClone() {
-        Specimen newSpecimen = Specimen.builder()
-                .citiesVisitedInOrder(List.of())
-                .objectiveFunction(objectiveFunction)
-                .bestPosition(bestPosition)
-                .currentVelocity(currentVelocity)
-                .currentPosition(currentPosition)
-                .build();
-        for(int i = 0; i < citiesVisitedInOrder.size(); i++) {
-            newSpecimen.citiesVisitedInOrder.add(citiesVisitedInOrder.get(i).deepClone());
+        Specimen newSpecimen = new Specimen();
+        newSpecimen.setCitiesVisitedInOrder(new ArrayList<>());
+        newSpecimen.setObjectiveFunction(objectiveFunction);
+        newSpecimen.setBestPosition(new ArrayList<>(bestPosition));
+        newSpecimen.setCurrentVelocity(new ArrayList<>(currentVelocity));
+        newSpecimen.setCurrentPosition(new ArrayList<>(currentPosition));
+
+        for (City city : citiesVisitedInOrder) {
+            newSpecimen.getCitiesVisitedInOrder().add(city.deepClone());
         }
         return newSpecimen;
     }
 
-    public void setNewVelocityAndPosition(Double w, Double c1, Double r1, Double c2, Double r2, Specimen bestResult)
-    {
-        for (int i = 0; i < dataLoaded.TotalNumberOfCities; i++)
-        {
-            double vel = CurrentVelocity[i];
-            double pos = CurrentPosition[i];
-            double pBestLoc = BestPosition[i];
+    //todo: remove unused
+    public void setNewVelocityAndPosition(Double w, Double c1, Double r1, Double c2, Double r2, Specimen bestResult) {
+        for (int i = 0; i < dataSet.getNumberOfCities(); i++) {
+            Double vel = currentVelocity.get(i);
+            Double pos = currentPosition.get(i);
+            Double pBestLoc = bestPosition.get(i);
 
-            double gBestLoc = bestResult.BestPosition[i];
+            Double gBestLoc = bestResult.bestPosition.get(i);
 
             double newVel = (w * vel) + (r1 * c1) * (pBestLoc -
                     pos) + (r2 * c2) * (gBestLoc - pos);
 
-            CurrentVelocity[i] = newVel;
+            currentVelocity.set(i, newVel);
             double newPos = pos + newVel;
-            CurrentPosition[i] = newPos;
+            currentPosition.set(i, newPos);
 
-            SwapWithLocation((int)Math.Abs(pos - newPos));
+            swapWithLocation((int) Math.abs(pos - newPos));
+        }
+    }
+
+    public void swapWithLocation(int coeff) {
+        if (coeff > 10) {
+            coeff = 10;
+        }
+        for (int i = 0; i < coeff; i++) {
+            int random1 = 0;
+            int random2 = 0;
+
+            while (random1 == random2)
+                random2 = random.nextInt(0, dataSet.getNumberOfCities());
+
+            City city_1 = citiesVisitedInOrder.get(random1);
+            City city_2 = citiesVisitedInOrder.get(random2);
+
+            citiesVisitedInOrder.set(random2, city_1);
+            citiesVisitedInOrder.set(random1, city_2);
+
+            if (getTotalDistanceTraveled() > objectiveFunction) {
+                citiesVisitedInOrder.set(random2, city_2);
+                citiesVisitedInOrder.set(random1, city_1);
+            }
         }
     }
 

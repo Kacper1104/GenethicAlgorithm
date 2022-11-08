@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.Objects;
+
 @Builder
 @AllArgsConstructor
 public class City implements Comparable<City>{
@@ -39,5 +41,17 @@ public class City implements Comparable<City>{
                 .X(getX())
                 .Y(getY())
                 .build();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof City city)) return false;
+        return index.equals(city.index);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(index);
     }
 }
