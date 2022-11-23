@@ -95,64 +95,47 @@ public class GA {
     }
 
     private List<Specimen> selection() {
-        switch (selectionMethod) {
-            case TOURNAMENT:
-                return tournamentSelectionMethod();
-            case ROULETTE:
-                //TODO: rouletteSelectionMethod();
-                throw new RuntimeException("Roulette method missing");
-            case RANK:
-                //TODO: rankSelectionMethod();
-                throw new RuntimeException("Rank method missing");
-            default:
-                throw new IllegalArgumentException("Selection method missing");
-        }
+        return switch (selectionMethod) {
+            case TOURNAMENT -> tournamentSelectionMethod();
+            case ROULETTE -> rouletteSelectionMethod();
+            case RANK -> rankSelectionMethod();
+            default -> throw new IllegalArgumentException("Selection method missing");
+        };
     }
 
     private void mutation(List<Specimen> population) {
         if (random.nextDouble() <= PROBABILITY_OF_MUTATION) {
             switch (mutationMethod) {
-                case SWAP:
-                    population.forEach(specimen -> swapMutation(specimen));
-                case INVERSION:
-                    //TODO: inversionMutation();
-                    throw new RuntimeException("Inversion method missing");
-                default:
-                    throw new IllegalArgumentException("Mutation method missing");
+                case SWAP -> population.forEach(this::swapMutation);
+                case INVERSION -> population.forEach(this::inversionMutation);
+                default -> throw new IllegalArgumentException("Mutation method missing");
             }
         }
     }
 
     private void crossover(List<Specimen> population) {
         for (int i = 0; i < POPULATION_SIZE; i += 2) {
-            if (i + 1 < POPULATION_SIZE) {
-                Specimen[] children = random.nextDouble() <= PROBABILITY_OF_CROSSOVER
-                        ? getCrossChildren(population.get(i), population.get(i + 1))
-                        : new Specimen[]{population.get(i), population.get(i + 1)};
+            Specimen[] children = random.nextDouble() <= PROBABILITY_OF_CROSSOVER
+                    ? getCrossChildren(population.get(i), population.get(i + 1))
+                    : new Specimen[]{population.get(i), population.get(i + 1)};
 
-                population.set(i, children[0]);
-                population.set(i + 1, children[1]);
-            }
+            population.set(i, children[0]);
+            population.set(i + 1, children[1]);
         }
     }
     private Specimen[] getCrossChildren(Specimen parent1, Specimen parent2) {
         if (random.nextDouble() <= PROBABILITY_OF_CROSSOVER) {
-            return switch (CHOSEN_CROSSOVER_METHOD) {
+            return switch (crossoverMethod) {
                 case RANDOM_CROSSOVER -> randomCrossover(parent1, parent2);
-                case ONE_POINT_CROSSOVER ->
-                    //TODO: onePointCrossover();
-                        throw new RuntimeException("One point crossover method missing");
-                case TWO_POINT_CROSSOVER ->
-                    //TODO: twoPointCrossover();
-                        throw new RuntimeException("Two point crossover method missing");
+                case ONE_POINT_CROSSOVER -> onePointCrossover(parent1, parent2);
+                case TWO_POINT_CROSSOVER -> twoPointCrossover(parent1, parent2);
                 default -> throw new IllegalArgumentException("Crossover method missing");
             };
         } else return new Specimen[]{parent1, parent2};
     }
 
     private void evaluate(List<Specimen> population) {
-        for (int i = 0; i < population.size(); i++)
-            population.get(i).setObjectiveFunction();
+        for (Specimen specimen : population) specimen.setObjectiveFunction();
     }
 
     //selection methods
@@ -162,6 +145,58 @@ public class GA {
             nextPopulation.add(tournamentSelectionMethodForOneSpecimen());
 
         return nextPopulation;
+    }
+
+    private List<Specimen> rouletteSelectionMethod() {
+        double totalFitnessSum = oldPopulation.stream().map(Specimen::getObjectiveFunction)
+                .reduce(0., Double::sum);
+
+        List<Specimen> nextPopulation = new ArrayList<>(POPULATION_SIZE);
+        for (int i = 0; i < POPULATION_SIZE; i++)
+            nextPopulation.add(rouletteSelectionMethodForOneSpecimen(totalFitnessSum));
+
+        return nextPopulation;
+    }
+
+    private Specimen rouletteSelectionMethodForOneSpecimen(double totalFitnessSum) {
+        double randomNumber = random.nextDouble() * totalFitnessSum;
+        double partialSum = 0;
+        for (int i = 0; i < POPULATION_SIZE; i++)
+        {
+            partialSum += (oldPopulation.get(i).getObjectiveFunction());
+            if (partialSum >= randomNumber)
+                return oldPopulation.get(i);
+        }
+        return null;
+    }
+
+    private List<Specimen> rankSelectionMethod() {
+        List<Specimen> populationRank = new ArrayList<>(List.copyOf(oldPopulation));
+        populationRank.sort(Comparator.comparing(Specimen::getObjectiveFunction));
+        double totalFitnessSum = 0;
+
+        for (int i = 0; i < populationRank.size(); i++)
+        {
+            totalFitnessSum += i;
+        }
+
+        List<Specimen> nextPopulation = new ArrayList<>(POPULATION_SIZE);
+        for (int i = 0; i < POPULATION_SIZE; i++)
+            nextPopulation.add(rankSelectionMethodForOneSpecimen(totalFitnessSum));
+
+        return nextPopulation;
+    }
+
+    private Specimen rankSelectionMethodForOneSpecimen(Double totalFitnessSum) {
+        double randomNumber = random.nextDouble() * totalFitnessSum;
+        double partialSum = 0;
+        for (int i = 0; i < POPULATION_SIZE; i++)
+        {
+            partialSum += i;
+            if (partialSum >= randomNumber)
+                return oldPopulation.get(i);
+        }
+        return null;
     }
 
     private Specimen tournamentSelectionMethodForOneSpecimen() {
@@ -184,7 +219,7 @@ public class GA {
     }
 
     //mutation methods
-    private Specimen swapMutation(Specimen specimen) {
+    private void swapMutation(Specimen specimen) {
         int index1 = random.nextInt(0, dataSet.getNumberOfCities());
         int index2 = random.nextInt(0, dataSet.getNumberOfCities());
 
@@ -196,7 +231,10 @@ public class GA {
 
         specimen.getCitiesVisitedInOrder().set(index1, city2);
         specimen.getCitiesVisitedInOrder().set(index2, city1);
-        return specimen;
+    }
+
+    private void inversionMutation(Specimen specimen) {
+        Collections.reverse(specimen.getCitiesVisitedInOrder());
     }
 
     //crossover methods
@@ -243,6 +281,108 @@ public class GA {
                 }
             }
         }
+        return child;
+    }
+
+    private Specimen[] onePointCrossover(Specimen parent1, Specimen parent2) {
+        int crossPoint = random.nextInt(1, dataSet.getNumberOfCities() - 1);
+
+        Specimen child1 = onePointCrossoverBasedOnFirstParent(parent1, parent2, crossPoint);
+        Specimen child2 = onePointCrossoverBasedOnFirstParent(parent2, parent1, crossPoint);
+
+        return new Specimen[] { child1, child2 };
+    }
+
+    private Specimen onePointCrossoverBasedOnFirstParent(Specimen parent1, Specimen parent2, int crossPoint) {
+        Specimen child = new Specimen();
+
+        List<City> childCities = new ArrayList<>();
+        List<City> restOfGenes = new ArrayList<>();
+
+        for (int i = 0; i < crossPoint; i++)
+            childCities.add(parent1.getCitiesVisitedInOrder().get(i).deepClone());
+
+        for (int i = crossPoint; i < dataSet.getNumberOfCities(); i++)
+            restOfGenes.add(parent1.getCitiesVisitedInOrder().get(i));
+
+        for (int i = crossPoint; i < dataSet.getNumberOfCities(); i++)
+        {
+            if (restOfGenes.contains(parent2.getCitiesVisitedInOrder().get(i)))
+            {
+                restOfGenes.remove(parent2.getCitiesVisitedInOrder().get(i));
+                childCities.add(parent2.getCitiesVisitedInOrder().get(i).deepClone());
+            }
+            else
+            {
+                var item = restOfGenes.get(0);
+                restOfGenes.remove(0);
+                childCities.add(item.deepClone());
+            }
+        }
+
+        child.setCitiesVisitedInOrder(childCities);
+
+        return child;
+    }
+
+    private Specimen[] twoPointCrossover(Specimen parent1, Specimen parent2) {
+        int crossPoint1 = random.nextInt(1, dataSet.getNumberOfCities() - 1);
+        int crossPoint2 = random.nextInt(1, dataSet.getNumberOfCities() - 1);
+
+        while (crossPoint1 == crossPoint2)
+            crossPoint2 = random.nextInt(1, dataSet.getNumberOfCities() - 1);
+
+        if (crossPoint2 < crossPoint1)
+        {
+            int temp = crossPoint2;
+            crossPoint2 = crossPoint1;
+            crossPoint1 = temp;
+        }
+
+        Specimen child1 = twoPointBasedOnFirstParent(parent1, parent2, crossPoint1, crossPoint2);
+        Specimen child2 = twoPointBasedOnFirstParent(parent2, parent1, crossPoint1, crossPoint2);
+
+        return new Specimen[] { child1, child2 };
+    }
+
+    private Specimen twoPointBasedOnFirstParent(Specimen parent1, Specimen parent2, int crossPoint1, int crossPoint2) {
+        Specimen child = new Specimen();
+
+        List<City> childCities = new ArrayList<>();
+        List<City> restOfGenes = new ArrayList<>();
+
+        for (int i = 0; i < crossPoint1; i++)
+            childCities.add(parent1.getCitiesVisitedInOrder().get(i).deepClone());
+
+        for (int i = crossPoint1; i < crossPoint2; i++)
+            restOfGenes.add(parent1.getCitiesVisitedInOrder().get(i));
+
+        for (int i = crossPoint2; i < dataSet.getNumberOfCities(); i++)
+            restOfGenes.add(parent1.getCitiesVisitedInOrder().get(i));
+
+        for (int i = crossPoint1; i < crossPoint2; i++)
+        {
+            if (restOfGenes.contains(parent2.getCitiesVisitedInOrder().get(i)))
+            {
+                restOfGenes.remove(parent2.getCitiesVisitedInOrder().get(i));
+                childCities.add(parent2.getCitiesVisitedInOrder().get(i).deepClone());
+            }
+            else
+            {
+                var item = restOfGenes.get(0);
+                restOfGenes.remove(0);
+                childCities.add(item.deepClone());
+            }
+        }
+
+        for (int i = crossPoint2; i < dataSet.getNumberOfCities(); i++)
+        {
+            var item = restOfGenes.get(0);
+            restOfGenes.remove(0);
+            childCities.add(item.deepClone());
+        }
+
+        child.setCitiesVisitedInOrder(childCities);
         return child;
     }
 }
